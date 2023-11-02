@@ -2,26 +2,27 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   SafeAreaView,
-  Dimensions,
   TouchableOpacity,
   Image,
 } from "react-native";
 import TrackPlayer, {
   Capability,
   State,
-  Event,
   usePlaybackState,
-  useTrackPlayerEvents,
 } from "react-native-track-player";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import podcasts from "../../../assets/data";
-import { AppState } from "react-native";
+import { MusicPlayerScreenRouteProp } from "@/types/NavigationTypes";
 
-function MusicPlayer() {
-  const podcastsCount = podcasts.length;
-  const [trackIndex, setTrackIndex] = useState(0);
+import styles from "./styles";
+
+type MusicPlayerScreenProps = {
+  route: MusicPlayerScreenRouteProp;
+};
+
+function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
+  const { station } = route.params;
+
   const [trackTitle, setTrackTitle] = useState<string>();
   const [trackArtist, setTrackArtist] = useState<string>();
   const [trackArtwork, setTrackArtwork] = useState<string>();
@@ -32,7 +33,7 @@ function MusicPlayer() {
     try {
       const playerIsRunning = await TrackPlayer.isServiceRunning();
       console.log("Player running state:", playerIsRunning);
-      if (!playerIsRunning){
+      if (!playerIsRunning) {
         await TrackPlayer.setupPlayer({ autoHandleInterruptions: true });
         await TrackPlayer.updateOptions({
           stoppingAppPausesPlayback: true,
@@ -45,7 +46,7 @@ function MusicPlayer() {
         });
       }
 
-      await TrackPlayer.add(podcasts);
+      await TrackPlayer.add(station);
       await setTrackData();
       await TrackPlayer.play();
     } catch (error) {
@@ -58,26 +59,9 @@ function MusicPlayer() {
     await TrackPlayer.reset();
   };
 
-  useTrackPlayerEvents([Event.PlaybackTrackChanged], async (event) => {
-    if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
-      const track = await TrackPlayer.getTrack(event.nextTrack);
-
-      if (track != undefined) {
-        const { title, artwork, artist } = track;
-        console.log(event.nextTrack);
-        setTrackIndex(event.nextTrack);
-        setTrackTitle(title);
-        setTrackArtist(artist);
-        setTrackArtwork(artwork);
-      }
-    }
-  });
-
   const setTrackData = async () => {
     let trackIndex = (await TrackPlayer.getActiveTrackIndex()) || 0;
     let trackObject = await TrackPlayer.getTrack(trackIndex);
-    console.log(trackIndex);
-    setTrackIndex(trackIndex);
     setTrackTitle(trackObject?.title);
     setTrackArtist(trackObject?.artist);
     setTrackArtwork(trackObject?.artwork);
@@ -94,26 +78,12 @@ function MusicPlayer() {
     }
   };
 
-  const nexttrack = async () => {
-    if (trackIndex < podcastsCount - 1) {
-      await TrackPlayer.skipToNext();
-      setTrackData();
-    }
-  };
-
-  const previoustrack = async () => {
-    if (trackIndex > 0) {
-      await TrackPlayer.skipToPrevious();
-      setTrackData();
-    }
-  };
-
   useEffect(() => {
     setupPlayer();
 
     return () => {
       stopPlayer();
-    }
+    };
   }, []);
 
   return (
@@ -139,9 +109,6 @@ function MusicPlayer() {
           </Text>
         </View>
         <View style={styles.musicControlsContainer}>
-          <TouchableOpacity onPress={previoustrack}>
-            <Ionicons name="play-skip-back-outline" size={35} color="#FFD369" />
-          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => togglePlayBack(playBackState)}
             disabled={playBackState.state === State.Loading}
@@ -156,67 +123,10 @@ function MusicPlayer() {
               color="#FFD369"
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={nexttrack}>
-            <Ionicons
-              name="play-skip-forward-outline"
-              size={35}
-              color="#FFD369"
-            />
-          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
   );
 }
 
-export default MusicPlayer;
-
-const { width, height } = Dimensions.get("window");
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#222831",
-  },
-  mainContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  mainWrapper: {
-    width: width,
-    height: width,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  imageWrapper: {
-    alignSelf: "center",
-    width: "90%",
-    height: "90%",
-    borderRadius: 15,
-  },
-  songText: {
-    marginTop: 2,
-    height: 70,
-  },
-  songContent: {
-    textAlign: "center",
-    color: "#EEEEEE",
-  },
-  songTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-  },
-  songArtist: {
-    fontSize: 16,
-    fontWeight: "300",
-  },
-  musicControlsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 20,
-    marginBottom: 20,
-    width: "60%",
-  },
-});
+export default MusicPlayerScreen;
