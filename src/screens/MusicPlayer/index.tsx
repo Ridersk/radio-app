@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -9,25 +9,42 @@ import {
 import TrackPlayer, {
   Capability,
   State,
+  Track,
   usePlaybackState,
 } from "react-native-track-player";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { MusicPlayerScreenRouteProp } from "@/types/NavigationTypes";
+import { MusicPlayerScreenNavigationProp, MusicPlayerScreenRouteProp } from "@/types/NavigationTypes";
 
 import styles from "./styles";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/src/state/reducers";
+import { musicPlayerActions } from "../../state/musicPlayer";
 
 type MusicPlayerScreenProps = {
+  navigation: MusicPlayerScreenNavigationProp;
   route: MusicPlayerScreenRouteProp;
 };
 
 function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
   const { station } = route.params;
 
-  const [trackTitle, setTrackTitle] = useState<string>();
-  const [trackArtist, setTrackArtist] = useState<string>();
-  const [trackArtwork, setTrackArtwork] = useState<string>();
+  const dispatch = useDispatch();
+  const currentStation = useSelector((state: RootState) => state.musicPlayer.currentStation);
 
   const playBackState = usePlaybackState();
+
+  const handlePlayState = async () => {
+    dispatch(musicPlayerActions.play({...station, artwork: Image.resolveAssetSource(station.artwork).uri}));
+  };
+
+  const handlePauseState = async () => {
+    dispatch(musicPlayerActions.pause());
+  };
+
+  const getTrackDataFromPlaybackState = async (): Promise<Track | undefined> => {
+    let trackIndex = (await TrackPlayer.getActiveTrackIndex()) || 0;
+    return await TrackPlayer.getTrack(trackIndex);
+  };
 
   const setupPlayer = async () => {
     try {
@@ -36,7 +53,7 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
       if (!playerIsRunning) {
         await TrackPlayer.setupPlayer({ autoHandleInterruptions: true });
         await TrackPlayer.updateOptions({
-          stoppingAppPausesPlayback: true,
+          // stoppingAppPausesPlayback: true,
           capabilities: [
             Capability.Play,
             Capability.Pause,
@@ -46,25 +63,16 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
         });
       }
 
-      await TrackPlayer.add(station);
-      await setTrackData();
-      await TrackPlayer.play();
+      if ((await getTrackDataFromPlaybackState())?.url != station.url){
+        await TrackPlayer.reset();
+        await TrackPlayer.add(station);
+        await TrackPlayer.play();
+      }
+      
+      await handlePlayState();
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const stopPlayer = async () => {
-    await TrackPlayer.stop();
-    await TrackPlayer.reset();
-  };
-
-  const setTrackData = async () => {
-    let trackIndex = (await TrackPlayer.getActiveTrackIndex()) || 0;
-    let trackObject = await TrackPlayer.getTrack(trackIndex);
-    setTrackTitle(trackObject?.title);
-    setTrackArtist(trackObject?.artist);
-    setTrackArtwork(trackObject?.artwork);
   };
 
   const togglePlayBack = async (state: typeof playBackState) => {
@@ -72,26 +80,24 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
     if (currentTrack != null) {
       if (state.state == State.Paused || state.state == State.Ready) {
         await TrackPlayer.play();
+        await handlePlayState();
       } else {
         await TrackPlayer.pause();
+        await handlePauseState();
       }
     }
   };
 
   useEffect(() => {
     setupPlayer();
-
-    return () => {
-      stopPlayer();
-    };
   }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.mainContainer}>
         <View style={styles.mainWrapper}>
-          {trackArtwork && (
-            <Image source={{ uri: trackArtwork }} style={styles.imageWrapper} />
+          {currentStation?.coverImageUri && (
+            <Image source={{ uri: currentStation.coverImageUri }} style={styles.imageWrapper} />
           )}
         </View>
         <View style={styles.songText}>
@@ -99,13 +105,7 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
             style={[styles.songContent, styles.songTitle]}
             numberOfLines={3}
           >
-            {trackTitle}
-          </Text>
-          <Text
-            style={[styles.songContent, styles.songArtist]}
-            numberOfLines={2}
-          >
-            {trackArtist}
+            {currentStation?.name}
           </Text>
         </View>
         <View style={styles.musicControlsContainer}>
