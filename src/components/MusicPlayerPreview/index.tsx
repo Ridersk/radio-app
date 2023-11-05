@@ -4,7 +4,7 @@ import { RootStackParamList } from "@/types/NavigationTypes";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { Image, TouchableOpacity, View } from "react-native";
 
-import { Card } from "react-native-paper";
+import { Card, useTheme } from "react-native-paper";
 import TrackPlayer, {
   State,
   usePlaybackState,
@@ -13,6 +13,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 
 function MusicPlayerPreview() {
+  const theme = useTheme();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const dispatch = useDispatch();
 
@@ -47,9 +48,9 @@ function MusicPlayerPreview() {
     if (musicPlayerState.currentStation) {
       navigation.navigate("MusicPlayer", {
         station: {
-          title: musicPlayerState.currentStation?.title,
-          image: musicPlayerState.currentStation?.image,
-          url: musicPlayerState.currentStation?.stream,
+          id: musicPlayerState.currentStation.id,
+          title: musicPlayerState.currentStation.title,
+          image: musicPlayerState.currentStation.image,
         },
       });
     }
@@ -73,7 +74,7 @@ function MusicPlayerPreview() {
   }
 
   return (
-    <View>
+    <View style={{ backgroundColor: theme.colors.secondaryContainer }}>
       {["paused", "playing"].includes(musicPlayerState.state) && (
         <TouchableOpacity onPress={navigateToMusicPlayer}>
           <Card.Title

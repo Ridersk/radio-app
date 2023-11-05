@@ -13,6 +13,7 @@ import { RootStackParamList } from "./types/NavigationTypes";
 import MusicPlayerPreview from "./src/components/MusicPlayerPreview";
 import { musicPlayerActions } from "./src/store/musicPlayer";
 import StationsScreen from "./src/screens/Stations";
+import { CombinedDarkTheme } from "./src/themes/dark";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -43,6 +44,7 @@ export default function App() {
   return (
     <NavigationContainer
       ref={navigationRef}
+      theme={CombinedDarkTheme}
       onReady={() =>
         setCurrentRoute(navigationRef.current?.getCurrentRoute()?.name)
       }
