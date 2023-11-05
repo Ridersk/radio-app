@@ -17,8 +17,8 @@ import { MusicPlayerScreenNavigationProp, MusicPlayerScreenRouteProp } from "@/t
 
 import styles from "./styles";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/src/state/reducers";
-import { musicPlayerActions } from "../../state/musicPlayer";
+import { RootState } from "@/src/store";
+import { musicPlayerActions } from "@/src/store/musicPlayer";
 
 type MusicPlayerScreenProps = {
   navigation: MusicPlayerScreenNavigationProp;
@@ -34,7 +34,7 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
   const playBackState = usePlaybackState();
 
   const handlePlayState = async () => {
-    dispatch(musicPlayerActions.play({...station, artwork: Image.resolveAssetSource(station.artwork).uri}));
+    dispatch(musicPlayerActions.play({...station, artwork: station.artwork}));
   };
 
   const handlePauseState = async () => {
@@ -96,8 +96,8 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
     <SafeAreaView style={styles.container}>
       <View style={styles.mainContainer}>
         <View style={styles.mainWrapper}>
-          {currentStation?.coverImageUri && (
-            <Image source={{ uri: currentStation.coverImageUri }} style={styles.imageWrapper} />
+          {currentStation?.coverUri && (
+            <Image source={{ uri: currentStation.coverUri }} style={styles.imageWrapper} />
           )}
         </View>
         <View style={styles.songText}>
@@ -116,8 +116,8 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
             <Ionicons
               name={
                 [State.Playing, State.Loading].includes(playBackState.state!)
-                  ? "ios-pause-circle"
-                  : "ios-play-circle"
+                  ? "pause-circle"
+                  : "play-circle"
               }
               size={75}
               color="#FFD369"

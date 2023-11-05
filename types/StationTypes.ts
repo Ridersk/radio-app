@@ -1,5 +1,5 @@
 interface Station {
   title: string;
-  artwork: any;
+  artwork: string;
   url: string;
 }

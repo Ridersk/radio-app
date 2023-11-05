@@ -4,7 +4,8 @@ interface MusicPlayerState {
   state: "playing" | "paused" | "stopped";
   currentStation?: {
     name: string;
-    coverImageUri: string;
+    coverUri: string;
+    streamUri: string;
   };
 }
 
@@ -21,10 +22,13 @@ const musicPlayerReducer = (
       return {
         ...state,
         state: "playing",
-        currentStation: {
-          name: action.station.title,
-          coverImageUri: action.station.artwork,
-        },
+        currentStation: action.station
+          ? {
+              name: action.station.title,
+              coverUri: action.station.artwork,
+              streamUri: action.station.url,
+            }
+          : state.currentStation,
       };
     case "PAUSE":
       return { ...state, state: "paused" };

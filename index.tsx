@@ -3,7 +3,7 @@ import TrackPlayer from "react-native-track-player";
 import App from "./App";
 import { PaperProvider } from "react-native-paper";
 import { Provider } from "react-redux";
-import store from "./src/state/store";
+import store from "./src/store";
 
 export default function Main() {
   return (

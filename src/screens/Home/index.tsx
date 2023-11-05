@@ -1,7 +1,7 @@
 import { FlatList, Image } from "react-native";
 import { SafeAreaView } from "react-native";
 
-import stations from "../../../assets/data";
+import stations from "@/assets/data";
 import { List } from "react-native-paper";
 import { HomeScreenNavigationProp } from "@/types/NavigationTypes";
 
@@ -19,7 +19,7 @@ function HomeScreen({ navigation }: HomeScreenProps) {
         title={station.title}
         left={() => (
           <Image
-            source={{ uri: Image.resolveAssetSource(station.artwork).uri }}
+            source={{ uri: station.artwork }}
             height={50}
             width={50}
           />
