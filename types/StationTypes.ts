@@ -3,3 +3,9 @@ interface Station {
   artwork: string;
   url: string;
 }
+
+interface StationCategory {
+  id: string;
+  title: string;
+  image: string;
+}
