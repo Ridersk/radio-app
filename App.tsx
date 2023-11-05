@@ -12,6 +12,7 @@ import TrackPlayer from "react-native-track-player";
 import { RootStackParamList } from "./types/NavigationTypes";
 import MusicPlayerPreview from "./src/components/MusicPlayerPreview";
 import { musicPlayerActions } from "./src/store/musicPlayer";
+import StationsScreen from "./src/screens/Stations";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -35,7 +36,7 @@ export default function App() {
   const [showMusicPreview, setShowMusicPreview] = useState<boolean>(false);
 
   useEffect(() => {
-    const allowedRoutes = ["Home"]
+    const allowedRoutes = ["Home", "Stations"]
     setShowMusicPreview(allowedRoutes.includes(currentRoute!));
   }, [currentRoute]);
 
@@ -52,6 +53,7 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="MusicPlayer" component={MusicPlayerScreen} />
+        <Stack.Screen name="Stations" component={StationsScreen} />
       </Stack.Navigator>
       {showMusicPreview && <MusicPlayerPreview />}
     </NavigationContainer>

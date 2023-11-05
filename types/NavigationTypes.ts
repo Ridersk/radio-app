@@ -3,7 +3,8 @@ import { RouteProp } from "@react-navigation/native";
 
 export type RootStackParamList = {
   Home: undefined;
-  MusicPlayer: {station: Station};
+  MusicPlayer: {station: StationBase};
+  Stations: {category: StationCategory}
 };
 
 export type HomeScreenNavigationProp = StackNavigationProp<
@@ -15,5 +16,10 @@ export type MusicPlayerScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   "MusicPlayer"
 >;
-
 export type MusicPlayerScreenRouteProp = RouteProp<RootStackParamList, "MusicPlayer">;
+
+export type StationsScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Stations"
+>;
+export type StationsScreenRouteProp = RouteProp<RootStackParamList, "Stations">;

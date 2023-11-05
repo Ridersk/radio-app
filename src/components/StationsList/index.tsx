@@ -4,31 +4,35 @@ import { FlatList, Image } from "react-native";
 import { List } from "react-native-paper";
 
 type StationListProps = {
-  stations: Array<Station>;
+  title: string;
+  stations: Array<StationBase>;
+  onEndReached: () => void;
 };
 
-function StationsList({ stations }: StationListProps) {
+function StationsList({ title, stations, onEndReached }: StationListProps) {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  function renderStation(station: Station, index: number) {
+  function renderStation(station: StationBase) {
     return (
       <List.Item
-        key={index}
+        key={station.id}
         title={station.title}
         left={() => (
-          <Image source={{ uri: station.artwork }} height={50} width={50} />
+          <Image source={{ uri: station.image }} height={50} width={50} />
         )}
-        onPress={() => navigation.navigate("MusicPlayer", { station: station })}
+        onPress={() => navigation.navigate("MusicPlayer", { station })}
       />
     );
   }
 
   return (
     <List.Section>
-      <List.Subheader style={{ fontSize: 20 }}>Top Stations</List.Subheader>
+      <List.Subheader style={{ fontSize: 20 }}>{title}</List.Subheader>
       <FlatList
         data={stations}
-        renderItem={({ item, index }) => renderStation(item, index)}
+        renderItem={({ item }) => renderStation(item)}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.1}
       />
     </List.Section>
   );

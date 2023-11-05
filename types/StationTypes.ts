@@ -1,6 +1,10 @@
-interface Station {
+interface StationBase {
+  id: string;
   title: string;
-  artwork: string;
+  image: string;
+}
+
+interface Station extends StationBase {
   url: string;
 }
 

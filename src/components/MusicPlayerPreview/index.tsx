@@ -47,9 +47,9 @@ function MusicPlayerPreview() {
     if (musicPlayerState.currentStation) {
       navigation.navigate("MusicPlayer", {
         station: {
-          title: musicPlayerState.currentStation?.name,
-          artwork: musicPlayerState.currentStation?.coverUri,
-          url: musicPlayerState.currentStation?.streamUri,
+          title: musicPlayerState.currentStation?.title,
+          image: musicPlayerState.currentStation?.image,
+          url: musicPlayerState.currentStation?.stream,
         },
       });
     }
@@ -77,11 +77,11 @@ function MusicPlayerPreview() {
       {["paused", "playing"].includes(musicPlayerState.state) && (
         <TouchableOpacity onPress={navigateToMusicPlayer}>
           <Card.Title
-            title={musicPlayerState.currentStation?.name}
-            subtitle={musicPlayerState.currentStation?.name}
+            title={musicPlayerState.currentStation?.title}
+            subtitle={musicPlayerState.currentStation?.title}
             left={() => (
               <Image
-                source={{ uri: musicPlayerState.currentStation?.coverUri }}
+                source={{ uri: musicPlayerState.currentStation?.image }}
                 height={50}
                 width={50}
               />
