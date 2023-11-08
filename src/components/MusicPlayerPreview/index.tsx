@@ -78,7 +78,7 @@ function MusicPlayerPreview() {
       {["paused", "playing"].includes(musicPlayerState.state) && (
         <TouchableOpacity onPress={navigateToMusicPlayer}>
           <Card.Title
-            title={musicPlayerState.currentStation?.title}
+            title="Tocando agora"
             subtitle={musicPlayerState.currentStation?.title}
             left={() => (
               <Image

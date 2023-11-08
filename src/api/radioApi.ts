@@ -1,4 +1,5 @@
 import axios from "axios";
+import { formatUrlToHttps } from "../utils/urlUtils";
 
 const radioSearchApi = axios.create({
   baseURL: "https://api.tunein.com",
@@ -38,7 +39,7 @@ export async function getCategories(): Promise<StationCategory[]> {
     return categories.map((category) => ({
       id: category.GuideId,
       title: category.Title,
-      image: category.Image,
+      image: formatUrlToHttps(category.Image),
     }));
   } catch (error) {
     console.error(error);
@@ -70,7 +71,7 @@ export async function getStationsByCategory(
     return stations.map((station) => ({
       id: station.GuideId,
       title: station.Title,
-      image: station.Image,
+      image: formatUrlToHttps(station.Image),
     }));
   } catch (error) {
     console.error(error);
@@ -85,7 +86,7 @@ export async function getStationStream(id: string): Promise<string> {
         type: "station",
         id: id,
         render: "json",
-        formats: "mp3",
+        formats: "mp3,aac,ogg,hls,wma",
         version: "5.97",
       },
     });
@@ -97,9 +98,10 @@ export async function getStationStream(id: string): Promise<string> {
       return "";
     }
 
-    const selectedStreamOption: any = streamOptions.find(
-      (option) => option?.media_type === "mp3"
-    );
+    // const selectedStreamOption: any = streamOptions.find(
+    //   (option) => option?.media_type === "mp3"
+    // );
+    const selectedStreamOption: any = streamOptions[0]
     if (!selectedStreamOption) {
       console.error("No stream option selected:", selectedStreamOption);
       return "";

@@ -9,7 +9,6 @@ import {
 import TrackPlayer, {
   Capability,
   State,
-  Track,
   usePlaybackState,
 } from "react-native-track-player";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -49,13 +48,6 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
     dispatch(musicPlayerActions.pause());
   };
 
-  const getTrackDataFromPlaybackState = async (): Promise<
-    Track | undefined
-  > => {
-    let trackIndex = (await TrackPlayer.getActiveTrackIndex()) || 0;
-    return await TrackPlayer.getTrack(trackIndex);
-  };
-
   const setupPlayer = async () => {
     try {
       const playerIsRunning = await TrackPlayer.isServiceRunning();
@@ -63,7 +55,6 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
       if (!playerIsRunning) {
         await TrackPlayer.setupPlayer({ autoHandleInterruptions: true });
         await TrackPlayer.updateOptions({
-          // stoppingAppPausesPlayback: true,
           capabilities: [
             Capability.Play,
             Capability.Pause,
@@ -74,33 +65,37 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
       }
 
       try {
-        if (stationFull && (await getTrackDataFromPlaybackState())?.url != stationFull.url) {
+        if (stationFull && stationFull.id != currentStation?.id) {
           await TrackPlayer.reset();
           await TrackPlayer.add({
             title: stationFull.title,
             url: stationFull.url,
             artwork: stationFull.image,
+            isLiveStream: true,
           });
           await TrackPlayer.play();
+          await handlePlayState();
         }
       } catch (error) {
         console.error("Error on start player:", error);
       }
-
-      await handlePlayState();
     } catch (error) {
       console.log(error);
     }
   };
 
   const togglePlayBack = async (state: typeof playBackState) => {
-    const currentTrack = await TrackPlayer.getActiveTrackIndex();
-    if (currentTrack != null) {
-      if (state.state == State.Paused || state.state == State.Ready) {
-        await TrackPlayer.play();
-        await handlePlayState();
+    const currentTrack = await TrackPlayer.getActiveTrack();
+    if (currentTrack) {
+      if ([State.Paused, State.Stopped, State.Ready].includes(state.state!)) {
+        if (stationFull) {
+          await TrackPlayer.reset();
+          await TrackPlayer.add(currentTrack);
+          await TrackPlayer.play();
+          await handlePlayState();
+        }
       } else {
-        await TrackPlayer.pause();
+        await TrackPlayer.stop();
         await handlePauseState();
       }
     }
@@ -125,7 +120,7 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
     if (stationFull) {
       setupPlayer();
     }
-  }, [stationFull])
+  }, [stationFull]);
 
   useEffect(() => {
     handleGetStationFull();
@@ -157,7 +152,9 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
           >
             <Ionicons
               name={
-                [State.Playing, State.Loading].includes(playBackState.state!)
+                [State.Playing, State.Buffering, State.Loading].includes(
+                  playBackState.state!
+                )
                   ? "pause-circle"
                   : "play-circle"
               }
