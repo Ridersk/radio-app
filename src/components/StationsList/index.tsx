@@ -15,7 +15,6 @@ function StationsList({ title, stations, onEndReached }: StationListProps) {
   function renderStation(station: StationBase) {
     return (
       <List.Item
-        key={station.id}
         title={station.title}
         left={() => (
           <Image source={{ uri: station.image }} height={50} width={50} />
@@ -30,9 +29,10 @@ function StationsList({ title, stations, onEndReached }: StationListProps) {
       <List.Subheader style={{ fontSize: 20 }}>{title}</List.Subheader>
       <FlatList
         data={stations}
+        keyExtractor={(item, index) => index + "_" + item.id}
         renderItem={({ item }) => renderStation(item)}
         onEndReached={onEndReached}
-        onEndReachedThreshold={0.1}
+        onEndReachedThreshold={0.5}
       />
     </List.Section>
   );

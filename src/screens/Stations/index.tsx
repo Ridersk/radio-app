@@ -14,8 +14,8 @@ function StationsScreen({ route }: StationsScreenProps) {
   const [page, setPage] = useState(0);
 
   async function handleGetStations() {
-    const stations = await getStationsByCategory(category.id, page);
-    setStations(prevStations => [...prevStations, ...stations]);
+    const newStations = await getStationsByCategory(category.id, page);
+    setStations(prevStations => [...prevStations, ...newStations]);
     setPage(prevPage => prevPage + 1);
   }
 

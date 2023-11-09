@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,8 +6,7 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import TrackPlayer, {
-  Capability,
+import {
   State,
   usePlaybackState,
 } from "react-native-track-player";
@@ -18,88 +17,49 @@ import {
 } from "@/types/NavigationTypes";
 
 import styles from "./styles";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
-import { musicPlayerActions } from "@/src/store/musicPlayer";
 import { getStationStream } from "@/src/api/radioApi";
+import { MusicPlayerServiceProvider } from "@/src/services";
 
 type MusicPlayerScreenProps = {
   navigation: MusicPlayerScreenNavigationProp;
   route: MusicPlayerScreenRouteProp;
 };
 
+
+
 function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
+  const playerService = useContext(MusicPlayerServiceProvider);
+  
   const { station } = route.params;
   const [stationFull, setStationFull] = useState<Station>();
 
-  const dispatch = useDispatch();
   const currentStation = useSelector(
     (state: RootState) => state.musicPlayer.currentStation
   );
 
   const playBackState = usePlaybackState();
 
-  const handlePlayState = async () => {
-    console.log("Handle Play - Station Full:", stationFull);
-    dispatch(musicPlayerActions.play(stationFull));
-  };
-
-  const handlePauseState = async () => {
-    dispatch(musicPlayerActions.pause());
-  };
-
   const setupPlayer = async () => {
     try {
-      const playerIsRunning = await TrackPlayer.isServiceRunning();
-      console.log("Player running state:", playerIsRunning);
-      if (!playerIsRunning) {
-        await TrackPlayer.setupPlayer({ autoHandleInterruptions: true });
-        await TrackPlayer.updateOptions({
-          capabilities: [
-            Capability.Play,
-            Capability.Pause,
-            Capability.SkipToNext,
-            Capability.SkipToPrevious,
-          ],
-        });
-      }
+      await playerService.init();
 
       try {
         if (stationFull && stationFull.id != currentStation?.id) {
-          await TrackPlayer.reset();
-          await TrackPlayer.add({
-            title: stationFull.title,
-            url: stationFull.url,
-            artwork: stationFull.image,
-            isLiveStream: true,
-          });
-          await TrackPlayer.play();
-          await handlePlayState();
+          await playerService.play(stationFull);
         }
       } catch (error) {
         console.error("Error on start player:", error);
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error on setup player:", error);
     }
   };
 
-  const togglePlayBack = async (state: typeof playBackState) => {
-    const currentTrack = await TrackPlayer.getActiveTrack();
-    if (currentTrack) {
-      if ([State.Paused, State.Stopped, State.Ready].includes(state.state!)) {
-        if (stationFull) {
-          await TrackPlayer.reset();
-          await TrackPlayer.add(currentTrack);
-          await TrackPlayer.play();
-          await handlePlayState();
-        }
-      } else {
-        await TrackPlayer.stop();
-        await handlePauseState();
-      }
-    }
-  };
+  const handlePlayBtn = async () => {
+    await playerService.togglePlayBack(playBackState);
+  }
 
   function isStationFull(obj: StationBase): obj is Station {
     return (obj as Station).url !== undefined;
@@ -147,7 +107,7 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
         </View>
         <View style={styles.musicControlsContainer}>
           <TouchableOpacity
-            onPress={() => togglePlayBack(playBackState)}
+            onPress={handlePlayBtn}
             disabled={playBackState.state === State.Loading}
           >
             <Ionicons

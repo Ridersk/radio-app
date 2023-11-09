@@ -2,12 +2,7 @@ import { MusicPlayerAction } from "./musicPlayerActions";
 
 interface MusicPlayerState {
   state: "playing" | "paused" | "stopped";
-  currentStation?: {
-    id: string,
-    title: string;
-    image: string;
-    stream: string;
-  };
+  currentStation?: Station;
 }
 
 const initialState: MusicPlayerState = {
@@ -24,12 +19,7 @@ const musicPlayerReducer = (
         ...state,
         state: "playing",
         currentStation: action.station
-          ? {
-              id: action.station.id,
-              title: action.station.title,
-              image: action.station.image,
-              stream: action.station.url,
-            }
+          ? action.station
           : state.currentStation,
       };
     case "PAUSE":

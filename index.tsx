@@ -18,5 +18,5 @@ export default function Main() {
 
 registerRootComponent(Main);
 TrackPlayer.registerPlaybackService(() =>
-  require("./src/services/musicPlayer")
+  require("./src/services/musicPlayer/backgroundTask")
 );
