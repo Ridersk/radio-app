@@ -30,13 +30,15 @@ function MusicPlayerPreview() {
   };
 
   const togglePlayBack = async (state: typeof playBackState) => {
-    const currentTrack = await TrackPlayer.getActiveTrackIndex();
-    if (currentTrack != null) {
-      if (state.state == State.Paused || state.state == State.Ready) {
-        await TrackPlayer.play();
-        await handlePlayState();
+    const currentTrack = await TrackPlayer.getActiveTrack();
+    if (currentTrack) {
+      if ([State.Paused, State.Stopped, State.Ready].includes(state.state!)) {
+          await TrackPlayer.reset();
+          await TrackPlayer.add(currentTrack);
+          await TrackPlayer.play();
+          await handlePlayState();
       } else {
-        await TrackPlayer.pause();
+        await TrackPlayer.stop();
         await handlePauseState();
       }
     }
