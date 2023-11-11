@@ -24,12 +24,8 @@ export class MusicPlayerService {
     if (!playerIsRunning) {
       await TrackPlayer.setupPlayer({ autoHandleInterruptions: true });
       await TrackPlayer.updateOptions({
-        capabilities: [
-          Capability.Play,
-          Capability.Pause,
-          Capability.SkipToNext,
-          Capability.SkipToPrevious,
-        ],
+        notificationCapabilities: [Capability.Play, Capability.Pause],
+        capabilities: [Capability.Play, Capability.Pause],
       });
     }
   }
@@ -52,7 +48,7 @@ export class MusicPlayerService {
   }
 
   async pause() {
-    await TrackPlayer.stop();
+    await TrackPlayer.pause();
     store.dispatch(musicPlayerActions.pause());
   }
 

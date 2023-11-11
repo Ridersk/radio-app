@@ -3,14 +3,8 @@ import {
   View,
   Text,
   SafeAreaView,
-  TouchableOpacity,
   Image,
 } from "react-native";
-import {
-  State,
-  usePlaybackState,
-} from "react-native-track-player";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import {
   MusicPlayerScreenNavigationProp,
   MusicPlayerScreenRouteProp,
@@ -21,6 +15,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/src/store";
 import { getStationStream } from "@/src/api/radioApi";
 import { MusicPlayerServiceProvider } from "@/src/services";
+import PlaybackButton from "@/src/components/PlaybackButton";
 
 type MusicPlayerScreenProps = {
   navigation: MusicPlayerScreenNavigationProp;
@@ -39,8 +34,6 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
     (state: RootState) => state.musicPlayer.currentStation
   );
 
-  const playBackState = usePlaybackState();
-
   const setupPlayer = async () => {
     try {
       await playerService.init();
@@ -56,10 +49,6 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
       console.error("Error on setup player:", error);
     }
   };
-
-  const handlePlayBtn = async () => {
-    await playerService.togglePlayBack(playBackState);
-  }
 
   function isStationFull(obj: StationBase): obj is Station {
     return (obj as Station).url !== undefined;
@@ -106,22 +95,7 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
           </Text>
         </View>
         <View style={styles.musicControlsContainer}>
-          <TouchableOpacity
-            onPress={handlePlayBtn}
-            disabled={playBackState.state === State.Loading}
-          >
-            <Ionicons
-              name={
-                [State.Playing, State.Buffering, State.Loading].includes(
-                  playBackState.state!
-                )
-                  ? "pause-circle"
-                  : "play-circle"
-              }
-              size={75}
-              color="#FFD369"
-            />
-          </TouchableOpacity>
+          <PlaybackButton size={72}/>
         </View>
       </View>
     </SafeAreaView>

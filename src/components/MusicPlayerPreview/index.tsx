@@ -1,31 +1,16 @@
-import { useContext } from "react";
 import { RootStackParamList } from "@/types/NavigationTypes";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { MusicPlayerServiceProvider } from "@/src/services";
 import { RootState } from "@/src/store";
 import { Image, TouchableOpacity, View } from "react-native";
 
 import { Card, useTheme } from "react-native-paper";
-import {
-  State,
-  usePlaybackState,
-} from "react-native-track-player";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import { useSelector } from "react-redux";
+import PlaybackButton from "../PlaybackButton";
 
 function MusicPlayerPreview() {
-  const playerService = useContext(MusicPlayerServiceProvider);
-
   const theme = useTheme();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
   const musicPlayerState = useSelector((state: RootState) => state.musicPlayer);
-
-  const playBackState = usePlaybackState();
-
-  const handlePlayBtn = async () => {
-    await playerService.togglePlayBack(playBackState);
-  }
 
   function navigateToMusicPlayer() {
     console.log("Navigate to MusicPlayer");
@@ -43,18 +28,9 @@ function MusicPlayerPreview() {
 
   function renderPlaybackBtn() {
     return (
-      <TouchableOpacity onPress={handlePlayBtn}>
-        <Ionicons
-          name={
-            [State.Playing, State.Loading].includes(playBackState.state!)
-              ? "pause-circle"
-              : "play-circle"
-          }
-          size={40}
-          color="#FFD369"
-          style={{ marginHorizontal: 8 }}
-        />
-      </TouchableOpacity>
+      <View style={{ marginHorizontal: 16 }}>
+        <PlaybackButton size={40} />
+      </View>
     );
   }
 
