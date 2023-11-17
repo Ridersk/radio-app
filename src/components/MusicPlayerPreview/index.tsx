@@ -1,4 +1,4 @@
-import { RootStackParamList } from "@/types/NavigationTypes";
+import { StackNavigatorRouterType } from "@/types/NavigationTypes";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootState } from "@/src/store";
 import { Image, TouchableOpacity, View } from "react-native";
@@ -9,7 +9,7 @@ import PlaybackButton from "../PlaybackButton";
 
 function MusicPlayerPreview() {
   const theme = useTheme();
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp<StackNavigatorRouterType>>();
   const musicPlayerState = useSelector((state: RootState) => state.musicPlayer);
 
   function navigateToMusicPlayer() {

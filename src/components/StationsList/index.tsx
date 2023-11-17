@@ -1,4 +1,4 @@
-import { RootStackParamList } from "@/types/NavigationTypes";
+import { StackNavigatorRouterType } from "@/types/NavigationTypes";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { FlatList, Image } from "react-native";
 import { List } from "react-native-paper";
@@ -10,7 +10,7 @@ type StationListProps = {
 };
 
 function StationsList({ title, stations, onEndReached }: StationListProps) {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp<StackNavigatorRouterType>>();
 
   function renderStation(station: StationBase) {
     return (

@@ -79,6 +79,43 @@ export async function getStationsByCategory(
   }
 }
 
+export async function searchStationsByText(
+  searchText: string,
+  page: number = 0
+): Promise<StationBase[]> {
+  try {
+    const stationsPerPage = 30;
+    const response = await radioSearchApi.get('/profiles', {
+      params: {
+        fullTextSearch: true,
+        query: searchText,
+        filter: "s",
+        ignoreCategoryRedirects: true,
+        formats: "mp3,aac,ogg,hls,wma",
+        limit: stationsPerPage,
+        offset: page * stationsPerPage,
+        version: "5.97"
+      },
+    });
+    console.log("Stations searched full text:", response.data);
+
+    const stations: any[] = response.data?.Items;
+    if (!stations) {
+      console.error("No stations found:", stations);
+      return [];
+    }
+
+    return stations.map((station) => ({
+      id: station.GuideId,
+      title: station.Title,
+      image: formatUrlToHttps(station.Image),
+    }));
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
 export async function getStationStream(id: string): Promise<string> {
   try {
     const response = await radioInfoApi.get("", {
@@ -101,7 +138,7 @@ export async function getStationStream(id: string): Promise<string> {
     // const selectedStreamOption: any = streamOptions.find(
     //   (option) => option?.media_type === "mp3"
     // );
-    const selectedStreamOption: any = streamOptions[0]
+    const selectedStreamOption: any = streamOptions[0];
     if (!selectedStreamOption) {
       console.error("No stream option selected:", selectedStreamOption);
       return "";

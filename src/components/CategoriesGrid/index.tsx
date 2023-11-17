@@ -1,12 +1,12 @@
 import { getCategories } from "@/src/api/radioApi";
-import { RootStackParamList } from "@/types/NavigationTypes";
+import { StackNavigatorRouterType } from "@/types/NavigationTypes";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { FlatList, View, Image, TouchableOpacity } from "react-native";
 import { Card } from "react-native-paper";
 
 function CategoriesGrid() {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp<StackNavigatorRouterType>>();
   const [categories, setCategories] = useState<StationCategory[]>();
 
   async function handleGetCategory() {

@@ -1,25 +1,25 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp } from "@react-navigation/native";
 
-export type RootStackParamList = {
-  Home: undefined;
+export type TabNavigatorRouterType = {
+  Home: undefined,
+  SearchStations: undefined
+}
+
+export type StackNavigatorRouterType = {
+  BottomTabStack: undefined;
   MusicPlayer: {station: StationBase};
-  Stations: {category: StationCategory}
+  Stations: {category: StationCategory};
 };
 
-export type HomeScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  "Home"
->;
-
 export type MusicPlayerScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
+  StackNavigatorRouterType,
   "MusicPlayer"
 >;
-export type MusicPlayerScreenRouteProp = RouteProp<RootStackParamList, "MusicPlayer">;
+export type MusicPlayerScreenRouteProp = RouteProp<StackNavigatorRouterType, "MusicPlayer">;
 
 export type StationsScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
+  StackNavigatorRouterType,
   "Stations"
 >;
-export type StationsScreenRouteProp = RouteProp<RootStackParamList, "Stations">;
+export type StationsScreenRouteProp = RouteProp<StackNavigatorRouterType, "Stations">;
