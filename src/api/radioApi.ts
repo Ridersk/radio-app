@@ -135,16 +135,13 @@ export async function getStationStream(id: string): Promise<string> {
       return "";
     }
 
-    // const selectedStreamOption: any = streamOptions.find(
-    //   (option) => option?.media_type === "mp3"
-    // );
     const selectedStreamOption: any = streamOptions[0];
     if (!selectedStreamOption) {
       console.error("No stream option selected:", selectedStreamOption);
       return "";
     }
 
-    return selectedStreamOption.url;
+    return formatUrlToHttps(selectedStreamOption.url);
   } catch (error) {
     console.error(error);
     return "";
