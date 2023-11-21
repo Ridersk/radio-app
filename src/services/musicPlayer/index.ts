@@ -1,10 +1,10 @@
-import store from "@/src/store";
-import { musicPlayerActions } from "@/src/store/musicPlayer";
 import TrackPlayer, {
   Capability,
   PlaybackState,
   State,
 } from "react-native-track-player";
+import store from "@/src/store";
+import { musicPlayerActions } from "@/src/store/musicPlayer";
 
 export class MusicPlayerService {
   private static instance: MusicPlayerService;

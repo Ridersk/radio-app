@@ -9,6 +9,7 @@ import { BottomNavigation } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import MusicPlayerPreview from "../components/MusicPlayerPreview";
 import HomeScreen from "../screens/Home";
+import FavoriteStationsScreen from "../screens/FavoriteStations";
 
 const Tab = createBottomTabNavigator<TabNavigatorRouterType>();
 
@@ -86,6 +87,16 @@ function BottomBarNavigator() {
           tabBarLabel: "Search",
           tabBarIcon: ({ color, size }) => {
             return <Icon name="search" size={size} color={color} />;
+          },
+        }}
+      />
+      <Tab.Screen
+        name="FavoriteStations"
+        component={FavoriteStationsScreen}
+        options={{
+          tabBarLabel: "Favorites",
+          tabBarIcon: ({ color, size }) => {
+            return <Icon name="heart" size={size} color={color} />;
           },
         }}
       />

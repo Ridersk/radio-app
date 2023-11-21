@@ -1,14 +1,20 @@
 import { MusicPlayerServiceProvider } from "@/src/services";
 import { useContext } from "react";
-import { ActivityIndicator, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 import { State, usePlaybackState } from "react-native-track-player";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 type PlaybackButtonProps = {
   size: number;
+  style?: ViewStyle;
 };
 
-function PlaybackButton({ size }: PlaybackButtonProps) {
+function PlaybackButton({ size, style }: PlaybackButtonProps) {
   const playerService = useContext(MusicPlayerServiceProvider);
   const playBackState = usePlaybackState();
   const color = "#FFD369";
@@ -31,11 +37,11 @@ function PlaybackButton({ size }: PlaybackButtonProps) {
         <View style={{ width: size, height: size }}>
           <ActivityIndicator animating={true} size={size * 0.8} color={color} />
         </View>
-      )
+      );
     }
 
     return (
-      <FontAwesome
+      <Icon
         name={isPlaying() ? "pause-circle" : "play-circle"}
         size={size}
         color={color}
@@ -44,7 +50,11 @@ function PlaybackButton({ size }: PlaybackButtonProps) {
   };
 
   return (
-    <TouchableOpacity onPress={handlePlayBtn} disabled={isLoading()}>
+    <TouchableOpacity
+      style={style}
+      onPress={handlePlayBtn}
+      disabled={isLoading()}
+    >
       {renderIcon()}
     </TouchableOpacity>
   );

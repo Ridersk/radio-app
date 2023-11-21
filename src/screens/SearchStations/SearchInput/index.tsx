@@ -5,7 +5,7 @@ import { TextStyle, View } from "react-native";
 
 interface SearchInputProps {
   onSearch: (text: string) => void;
-  style?: TextStyle ;
+  style?: TextStyle;
 };
 
 function SearchInput({ onSearch, style }: SearchInputProps) {

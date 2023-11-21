@@ -1,9 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-} from "react-native";
+import { View, Text, Image } from "react-native";
 import {
   MusicPlayerScreenNavigationProp,
   MusicPlayerScreenRouteProp,
@@ -16,19 +12,21 @@ import { getStationStream } from "@/src/api/radioApi";
 import { MusicPlayerServiceProvider } from "@/src/services";
 import PlaybackButton from "@/src/components/PlaybackButton";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { FavoriteStationsServiceProvider } from "@/src/services/favoriteStationsService";
+import IconButton from "@/src/components/Icons/IconButton";
 
 type MusicPlayerScreenProps = {
   navigation: MusicPlayerScreenNavigationProp;
   route: MusicPlayerScreenRouteProp;
 };
 
-
-
 function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
+  const favoriteService = useContext(FavoriteStationsServiceProvider);
   const playerService = useContext(MusicPlayerServiceProvider);
-  
+
   const { station } = route.params;
   const [stationFull, setStationFull] = useState<Station>();
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
   const currentStation = useSelector(
     (state: RootState) => state.musicPlayer.currentStation
@@ -65,6 +63,10 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
     console.log("Station to StationFull:", station);
   }
 
+  async function checkStationIsFavorite() {
+    setIsFavorite(!!(await favoriteService.get(station.id)));
+  }
+
   useEffect(() => {
     if (stationFull) {
       setupPlayer();
@@ -72,8 +74,15 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
   }, [stationFull]);
 
   useEffect(() => {
+    checkStationIsFavorite();
     handleGetStationFull();
   }, []);
+
+  const handleToggleFavorite = async () => {
+    if (isFavorite) await favoriteService.remove(station.id);
+    else if (stationFull) await favoriteService.add(stationFull);
+    await checkStationIsFavorite();
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -94,8 +103,17 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
             {currentStation?.title}
           </Text>
         </View>
-        <View style={styles.musicControlsContainer}>
-          <PlaybackButton size={72}/>
+        <View
+          style={{ ...styles.musicControlsContainer, flexDirection: "column" }}
+        >
+          <PlaybackButton size={72} style={{ position: "absolute" }} />
+          <IconButton
+            name={isFavorite ? "heart" : "heart-o"}
+            size={32}
+            color={"#FFD369"}
+            style={{ position: "absolute", alignSelf: "flex-end" }}
+            onPress={handleToggleFavorite}
+          />
         </View>
       </View>
     </SafeAreaView>
