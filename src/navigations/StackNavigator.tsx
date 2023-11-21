@@ -9,7 +9,11 @@ const Stack = createStackNavigator<StackNavigatorRouterType>();
 function StackNavigator() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="BottomTabStack" component={BottomBarNavigator} />
+      <Stack.Screen
+        name="BottomTabStack"
+        component={BottomBarNavigator}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen name="Stations" component={StationsScreen} />
       <Stack.Screen name="MusicPlayer" component={MusicPlayerScreen} />
     </Stack.Navigator>

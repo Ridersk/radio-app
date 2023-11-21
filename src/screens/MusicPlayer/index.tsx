@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
-  SafeAreaView,
   Image,
 } from "react-native";
 import {
@@ -16,6 +15,7 @@ import { RootState } from "@/src/store";
 import { getStationStream } from "@/src/api/radioApi";
 import { MusicPlayerServiceProvider } from "@/src/services";
 import PlaybackButton from "@/src/components/PlaybackButton";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type MusicPlayerScreenProps = {
   navigation: MusicPlayerScreenNavigationProp;

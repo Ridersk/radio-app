@@ -4,6 +4,7 @@ import { searchStationsByText } from "@/src/api/radioApi";
 import { Text } from 'react-native-paper';
 import { useState } from "react";
 import StationsList from "@/src/components/StationsList";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 function SearchStationsScreen() {
   const [searchText, setSearchText] = useState("");
@@ -26,8 +27,8 @@ function SearchStationsScreen() {
   };
 
   return (
-    <View>
-      <SearchInput onSearch={handleSearchStations} />
+    <SafeAreaView>
+      <SearchInput onSearch={handleSearchStations} style={{ width: "80%"}}/>
       {stations && stations.length > 0 ? (
         <StationsList
           title={searchText}
@@ -39,7 +40,7 @@ function SearchStationsScreen() {
           <Text>Featured Stations</Text>
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 

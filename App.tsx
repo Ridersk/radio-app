@@ -1,6 +1,4 @@
-import {
-  NavigationContainer,
-} from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import TrackPlayer from "react-native-track-player";
@@ -25,9 +23,7 @@ export default function App() {
   }, []);
 
   return (
-    <NavigationContainer
-      theme={CombinedDarkTheme}
-    >
+    <NavigationContainer theme={CombinedDarkTheme}>
       <StackNavigator />
     </NavigationContainer>
   );

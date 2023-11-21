@@ -1,7 +1,7 @@
 import axios from "axios";
 import { formatUrlToHttps } from "../utils/urlUtils";
 
-const radioSearchApi = axios.create({
+const radioApi = axios.create({
   baseURL: "https://api.tunein.com",
   timeout: 5000,
   headers: {
@@ -9,7 +9,7 @@ const radioSearchApi = axios.create({
   },
 });
 
-const radioInfoApi = axios.create({
+const radioStreamApi = axios.create({
   baseURL: "https://opml.radiotime.com/Tune.ashx",
   timeout: 5000,
   headers: {
@@ -17,9 +17,16 @@ const radioInfoApi = axios.create({
   },
 });
 
+const ACCEPTED_FORMATS = "mp3,aac";
+const API_VERSION = "5.97";
+
 export async function getCategories(): Promise<StationCategory[]> {
   try {
-    const response = await radioSearchApi.get("/categories/music");
+    const response = await radioApi.get("/categories/music", {
+      params: {
+        version: API_VERSION,
+      },
+    });
     console.log("Category Groups:", response.data);
 
     const items: any[] = response.data?.Items;
@@ -53,11 +60,12 @@ export async function getStationsByCategory(
 ): Promise<StationBase[]> {
   try {
     const stationsPerPage = 30;
-    const response = await radioSearchApi.get(`/categories/${categoryId}`, {
+    const response = await radioApi.get(`/categories/${categoryId}`, {
       params: {
         filter: "s:free",
         limit: stationsPerPage,
         offset: page * stationsPerPage,
+        version: API_VERSION,
       },
     });
     console.log("Stations:", response.data);
@@ -85,16 +93,16 @@ export async function searchStationsByText(
 ): Promise<StationBase[]> {
   try {
     const stationsPerPage = 30;
-    const response = await radioSearchApi.get('/profiles', {
+    const response = await radioApi.get("/profiles", {
       params: {
         fullTextSearch: true,
         query: searchText,
         filter: "s",
         ignoreCategoryRedirects: true,
-        formats: "mp3,aac,ogg,hls,wma",
+        formats: ACCEPTED_FORMATS,
         limit: stationsPerPage,
         offset: page * stationsPerPage,
-        version: "5.97"
+        version: API_VERSION,
       },
     });
     console.log("Stations searched full text:", response.data);
@@ -118,13 +126,13 @@ export async function searchStationsByText(
 
 export async function getStationStream(id: string): Promise<string> {
   try {
-    const response = await radioInfoApi.get("", {
+    const response = await radioStreamApi.get("", {
       params: {
         type: "station",
         id: id,
         render: "json",
-        formats: "mp3,aac,ogg,hls,wma",
-        version: "5.97",
+        formats: ACCEPTED_FORMATS,
+        version: API_VERSION,
       },
     });
     console.log("Station stream data:", response.data);

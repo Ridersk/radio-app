@@ -1,12 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Searchbar } from "react-native-paper";
 import { debounce } from "lodash";
+import { TextStyle, View } from "react-native";
 
-type SearchInputProps = {
+interface SearchInputProps {
   onSearch: (text: string) => void;
+  style?: TextStyle ;
 };
 
-function SearchInput({ onSearch }: SearchInputProps) {
+function SearchInput({ onSearch, style }: SearchInputProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchQueryDebounced, setSearchQueryDebounced] = useState("");
 
@@ -25,11 +27,14 @@ function SearchInput({ onSearch }: SearchInputProps) {
   }
 
   return (
-    <Searchbar
-      placeholder="Search"
-      value={searchQuery}
-      onChangeText={(text) => handleChangeText(text)}
-    />
+    <View style={{ flexDirection: "row", justifyContent: "center"}}>
+      <Searchbar
+        placeholder="Search"
+        value={searchQuery}
+        onChangeText={(text) => handleChangeText(text)}
+        style={{...{margin: 8}, ...style}}
+      />
+    </View>
   );
 }
 

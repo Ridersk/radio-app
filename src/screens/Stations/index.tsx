@@ -1,8 +1,8 @@
 import { getStationsByCategory } from "@/src/api/radioApi";
 import StationsList from "@/src/components/StationsList";
-import { StationsScreenRouteProp } from "@/types/NavigationTypes";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { StationsScreenRouteProp } from "@/types/NavigationTypes";
 
 type StationsScreenProps = {
   route: StationsScreenRouteProp;
@@ -24,7 +24,7 @@ function StationsScreen({ route }: StationsScreenProps) {
   }, []);
 
   return (
-    <View>
+    <SafeAreaView>
       {stations && (
         <StationsList
           title={category.title}
@@ -32,7 +32,7 @@ function StationsScreen({ route }: StationsScreenProps) {
           onEndReached={handleGetStations}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 
