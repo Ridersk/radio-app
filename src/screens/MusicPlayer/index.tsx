@@ -21,12 +21,12 @@ type MusicPlayerScreenProps = {
 };
 
 function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
-  const favoriteService = useContext(FavoriteStationsServiceProvider);
   const playerService = useContext(MusicPlayerServiceProvider);
+  const favoriteService = useContext(FavoriteStationsServiceProvider);
 
   const { station } = route.params;
   const [stationFull, setStationFull] = useState<Station>();
-  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const [isFavorited, setIsFavorited] = useState<boolean>(false);
 
   const currentStation = useSelector(
     (state: RootState) => state.musicPlayer.currentStation
@@ -64,7 +64,7 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
   }
 
   async function checkStationIsFavorite() {
-    setIsFavorite(!!(await favoriteService.get(station.id)));
+    setIsFavorited(!!(await favoriteService.get(station.id)));
   }
 
   useEffect(() => {
@@ -79,8 +79,8 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
   }, []);
 
   const handleToggleFavorite = async () => {
-    if (isFavorite) await favoriteService.remove(station.id);
-    else if (stationFull) await favoriteService.add(stationFull);
+    if (isFavorited) await favoriteService.remove(station.id);
+    else if (station) await favoriteService.add(station);
     await checkStationIsFavorite();
   };
 
@@ -108,7 +108,7 @@ function MusicPlayerScreen({ route }: MusicPlayerScreenProps) {
         >
           <PlaybackButton size={72} style={{ position: "absolute" }} />
           <IconButton
-            name={isFavorite ? "heart" : "heart-o"}
+            name={isFavorited ? "heart" : "heart-o"}
             size={32}
             color={"#FFD369"}
             style={{ position: "absolute", alignSelf: "flex-end" }}

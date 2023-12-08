@@ -5,21 +5,18 @@ export class FavoriteStationModel extends BaseModel {
   stationId: string;
   title: string;
   image: string;
-  url: string;
 
   constructor(
     _id: string,
     stationId: string,
     title: string,
-    image: string,
-    url: string
+    image: string
   ) {
     super(_id);
     this._id = _id;
     this.stationId = stationId;
     this.title = title;
     this.image = image;
-    this.url = url;
   }
 
   static from(data: any) {
@@ -28,7 +25,6 @@ export class FavoriteStationModel extends BaseModel {
       data.stationId,
       data.title,
       data.image,
-      data.url,
     );
   }
 }

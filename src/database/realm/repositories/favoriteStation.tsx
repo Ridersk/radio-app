@@ -11,7 +11,6 @@ export class FavoriteStationObject extends Realm.Object<FavoriteStationModel> {
       stationId: "string",
       title: "string",
       image: "string",
-      url: "string",
     },
   };
 }

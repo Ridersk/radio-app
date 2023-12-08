@@ -23,28 +23,26 @@ export default class FavoriteStationsService {
     return FavoriteStationsService.instance;
   }
 
-  public async get(id: string): Promise<Station | null> {
+  public async get(id: string): Promise<StationBase | null> {
     try {
       const favorite = await this.repository.get(id);
       return {
         id: favorite.stationId,
         title: favorite.title,
         image: favorite.image,
-        url: favorite.url,
       }
     } catch {
       return null;
     }
   }
 
-  public async getAll(): Promise<Station[]> {
+  public async getAll(): Promise<StationBase[]> {
     const favorites = await this.repository.getAll();
     const stations = favorites.map(
-      (favorite): Station => ({
+      (favorite): StationBase => ({
         id: favorite.stationId,
         title: favorite.title,
         image: favorite.image,
-        url: favorite.url,
       }),
       favorites
       );
@@ -52,20 +50,18 @@ export default class FavoriteStationsService {
     return stations;
   }
 
-  public async add(station: Station): Promise<Station> {
+  public async add(station: StationBase): Promise<StationBase> {
     const favorite = await this.repository.create({
       _id: station.id,
       stationId: station.id,
       image: station.image,
       title: station.title,
-      url: station.url,
     });
     store.dispatch(favoriteStationsActions.add(station));
     return {
       id: favorite.stationId,
       title: favorite.title,
       image: favorite.image,
-      url: favorite.url,
     };
   }
 

@@ -1,7 +1,7 @@
 import { FavoriteStationsAction } from "./favoriteStationsActions";
 
 interface FavoriteStationsState {
-  favoriteStations: Station[];
+  favoriteStations: StationBase[];
 }
 
 const initialState: FavoriteStationsState = {

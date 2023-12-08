@@ -22,7 +22,7 @@ function FavoriteStationsScreen() {
   return (
     <SafeAreaView>
       <StationsList
-        title={"Favoritas"}
+        title={"Favorites"}
         stations={favoritedStations}
         onEndReached={() => {}}
       />

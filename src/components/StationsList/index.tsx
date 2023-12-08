@@ -39,13 +39,22 @@ function StationsList({ title, stations, onEndReached }: StationListProps) {
     );
   }, [favoritedStations]);
 
+  const handleToggleFavorite = async (
+    station: StationBase,
+    isFavorited: boolean
+  ) => {
+    if (isFavorited) await favoriteService.remove(station.id);
+    else if (station) await favoriteService.add(station);
+  };
+
   function renderFavBtn(station: StationBase) {
+    const isFavorited = favoritedIdsSet?.has(station.id)!;
     return (
       <Icon
-        name={favoritedIdsSet?.has(station.id) ? "heart" : "heart-o"}
+        name={isFavorited ? "heart" : "heart-o"}
         size={24}
         color={"white"}
-        onPress={() => {}}
+        onPress={() => handleToggleFavorite(station, isFavorited)}
         style={{ alignSelf: "center" }}
       />
     );

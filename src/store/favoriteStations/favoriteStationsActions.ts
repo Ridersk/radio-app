@@ -1,13 +1,13 @@
 export type FavoriteStationsAction =
-  | { type: "FILLUP"; stations: Station[] }
-  | { type: "ADD"; station: Station }
+  | { type: "FILLUP"; stations: StationBase[] }
+  | { type: "ADD"; station: StationBase }
   | { type: "REMOVE"; stationId: string };
 
-export const fillup = (stations: Station[]): FavoriteStationsAction => ({
+export const fillup = (stations: StationBase[]): FavoriteStationsAction => ({
   type: "FILLUP",
   stations,
 });
-export const add = (station: Station): FavoriteStationsAction => ({
+export const add = (station: StationBase): FavoriteStationsAction => ({
   type: "ADD",
   station,
 });
