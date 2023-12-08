@@ -4,7 +4,7 @@ import { StackNavigatorRouterType } from "@/types/NavigationTypes";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { useContext, useEffect, useState } from "react";
 import { FlatList, Image } from "react-native";
-import { List } from "react-native-paper";
+import { List, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useSelector } from "react-redux";
 
@@ -15,10 +15,14 @@ type StationListProps = {
 };
 
 function StationsList({ title, stations, onEndReached }: StationListProps) {
+  const theme = useTheme();
   const navigation = useNavigation<NavigationProp<StackNavigatorRouterType>>();
   const favoriteService = useContext(FavoriteStationsServiceProvider);
   const favoritedStations = useSelector(
     (state: RootState) => state.favoriteStations.favoriteStations
+  );
+  const currentStation = useSelector(
+    (state: RootState) => state.musicPlayer.currentStation
   );
   const [favoritedIdsSet, setFavoritedIdsSet] = useState<Set<string>>();
 
@@ -42,6 +46,7 @@ function StationsList({ title, stations, onEndReached }: StationListProps) {
         size={24}
         color={"white"}
         onPress={() => {}}
+        style={{ alignSelf: "center" }}
       />
     );
   }
@@ -49,9 +54,20 @@ function StationsList({ title, stations, onEndReached }: StationListProps) {
   function renderStation(station: StationBase) {
     return (
       <List.Item
+        style={{
+          backgroundColor:
+            station.id === currentStation?.id
+              ? theme.colors.secondaryContainer
+              : "",
+        }}
         title={station.title}
         left={() => (
-          <Image source={{ uri: station.image }} height={50} width={50} />
+          <Image
+            source={{ uri: station.image }}
+            height={50}
+            width={50}
+            style={{ marginLeft: 8 }}
+          />
         )}
         right={() => renderFavBtn(station)}
         onPress={() => navigation.navigate("MusicPlayer", { station })}
