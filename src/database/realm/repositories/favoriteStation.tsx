@@ -15,6 +15,8 @@ export class FavoriteStationObject extends Realm.Object<FavoriteStationModel> {
   };
 }
 
-export default () => {
-  return new RealmDatabase<FavoriteStationModel>(FavoriteStationObject, FavoriteStationModel);
-}
+export const schema = new RealmDatabase<FavoriteStationModel>(
+  FavoriteStationObject,
+  FavoriteStationModel,
+  2
+);

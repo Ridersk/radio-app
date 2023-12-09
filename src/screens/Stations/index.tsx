@@ -12,24 +12,32 @@ function StationsScreen({ route }: StationsScreenProps) {
   const { category } = route.params;
   const [stations, setStations] = useState<StationBase[]>([]);
   const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+  
+  useEffect(() => {
+    retrieveStations();
+  }, []);
 
-  async function handleGetStations() {
+  const handleGetStations = async () => {
     const newStations = await getStationsByCategory(category.id, page);
     setStations(prevStations => [...prevStations, ...newStations]);
     setPage(prevPage => prevPage + 1);
+  };
+
+  async function retrieveStations() {
+    setLoading(true);
+    await handleGetStations();
+    setLoading(false);
   }
 
-  useEffect(() => {
-    handleGetStations();
-  }, []);
-
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       {stations && (
         <StationsList
           title={category.title}
           stations={stations}
           onEndReached={handleGetStations}
+          loading={loading}
         />
       )}
     </SafeAreaView>

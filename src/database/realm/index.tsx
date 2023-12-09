@@ -8,10 +8,10 @@ export class RealmDatabase<T extends BaseModel> implements IDatabase<T> {
   private readonly schemaClass: ObjectClass;
   private readonly modelClass: BaseModelClass<T>;
 
-  constructor(schema: ObjectClass, model: BaseModelClass<T>) {
+  constructor(schema: ObjectClass, model: BaseModelClass<T>, version: number) {
     this.realm = new Realm({
       schema: [schema],
-      schemaVersion: 1,
+      schemaVersion: version,
     });
     this.schemaClass = schema;
     this.modelClass = model;

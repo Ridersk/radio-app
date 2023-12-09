@@ -3,18 +3,24 @@ import { RootState } from "@/src/store";
 import { StackNavigatorRouterType } from "@/types/NavigationTypes";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { useContext, useEffect, useState } from "react";
-import { FlatList, Image } from "react-native";
-import { List, useTheme } from "react-native-paper";
+import { FlatList, Image, View } from "react-native";
+import { ActivityIndicator, List, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useSelector } from "react-redux";
 
 type StationListProps = {
   title: string;
   stations: Array<StationBase>;
-  onEndReached: () => void;
+  onEndReached?: () => void;
+  loading?: boolean;
 };
 
-function StationsList({ title, stations, onEndReached }: StationListProps) {
+function StationsList({
+  title,
+  stations,
+  onEndReached,
+  loading,
+}: StationListProps) {
   const theme = useTheme();
   const navigation = useNavigation<NavigationProp<StackNavigatorRouterType>>();
   const favoriteService = useContext(FavoriteStationsServiceProvider);
@@ -45,6 +51,10 @@ function StationsList({ title, stations, onEndReached }: StationListProps) {
   ) => {
     if (isFavorited) await favoriteService.remove(station.id);
     else if (station) await favoriteService.add(station);
+  };
+
+  const handleOnReached = () => {
+    if (onEndReached) onEndReached();
   };
 
   function renderFavBtn(station: StationBase) {
@@ -84,17 +94,35 @@ function StationsList({ title, stations, onEndReached }: StationListProps) {
     );
   }
 
+  function renderLoading() {
+    return (
+      <View style={{ flex: 1, justifyContent: "center" }}>
+        <ActivityIndicator
+          animating={true}
+          size={"large"}
+          color={theme.colors.secondaryContainer}
+        />
+      </View>
+    );
+  }
+
   return (
-    <List.Section>
-      <List.Subheader style={{ fontSize: 20 }}>{title}</List.Subheader>
-      <FlatList
-        data={stations}
-        keyExtractor={(item, index) => index + "_" + item.id}
-        renderItem={({ item }) => renderStation(item)}
-        onEndReached={onEndReached}
-        onEndReachedThreshold={0.5}
-      />
-    </List.Section>
+    <View style={{ flex: 1 }}>
+      {loading ? (
+        renderLoading()
+      ) : (
+        <List.Section style={{ flex: 1 }}>
+          <List.Subheader style={{ fontSize: 20 }}>{title}</List.Subheader>
+          <FlatList
+            data={stations}
+            keyExtractor={(item, index) => index + "_" + item.id}
+            renderItem={({ item }) => renderStation(item)}
+            onEndReached={handleOnReached}
+            onEndReachedThreshold={0.5}
+          />
+        </List.Section>
+      )}
+    </View>
   );
 }
 
