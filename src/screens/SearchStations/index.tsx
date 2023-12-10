@@ -36,7 +36,6 @@ function SearchStationsScreen() {
       <SearchInput onSearch={handleSearchStations} style={{ width: "80%" }} />
       {searchText ? (
         <StationsList
-          title={searchText}
           stations={stations}
           onEndReached={handleGetMoreStations}
           loading={loading}

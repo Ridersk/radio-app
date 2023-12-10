@@ -25,7 +25,6 @@ function FavoriteStationsScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StationsList
-        title={"Favorites"}
         stations={favoritedStations}
         loading={loading}
       />

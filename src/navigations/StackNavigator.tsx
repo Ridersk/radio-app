@@ -14,8 +14,16 @@ function StackNavigator() {
         component={BottomBarNavigator}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="Stations" component={StationsScreen} />
-      <Stack.Screen name="MusicPlayer" component={MusicPlayerScreen} />
+      <Stack.Screen
+        name="Stations"
+        component={StationsScreen}
+        options={{ title: "Stations" }}
+      />
+      <Stack.Screen
+        name="MusicPlayer"
+        component={MusicPlayerScreen}
+        options={{ title: "Player" }}
+      />
     </Stack.Navigator>
   );
 }

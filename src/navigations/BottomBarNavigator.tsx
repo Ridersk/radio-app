@@ -66,7 +66,7 @@ function BottomBarNavigator() {
   return (
     <Tab.Navigator
       screenOptions={{
-        headerShown: false,
+        // headerShown: false,
       }}
       tabBar={renderBottomBar}
     >
@@ -74,6 +74,7 @@ function BottomBarNavigator() {
         name="Home"
         component={HomeScreen}
         options={{
+          title: "Home",
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => {
             return <Icon name="home" size={size} color={color} />;
@@ -84,6 +85,7 @@ function BottomBarNavigator() {
         name="SearchStations"
         component={SearchStationsScreen}
         options={{
+          title: "Search Stations",
           tabBarLabel: "Search",
           tabBarIcon: ({ color, size }) => {
             return <Icon name="search" size={size} color={color} />;
@@ -94,6 +96,7 @@ function BottomBarNavigator() {
         name="FavoriteStations"
         component={FavoriteStationsScreen}
         options={{
+          title: "Favorite Stations",
           tabBarLabel: "Favorites",
           tabBarIcon: ({ color, size }) => {
             return <Icon name="heart" size={size} color={color} />;

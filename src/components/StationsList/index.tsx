@@ -9,7 +9,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { useSelector } from "react-redux";
 
 type StationListProps = {
-  title: string;
+  title?: string;
   stations: Array<StationBase>;
   onEndReached?: () => void;
   loading?: boolean;
@@ -112,7 +112,7 @@ function StationsList({
         renderLoading()
       ) : (
         <List.Section style={{ flex: 1 }}>
-          <List.Subheader style={{ fontSize: 20 }}>{title}</List.Subheader>
+          {title && <List.Subheader style={{ fontSize: 20 }}>{title}</List.Subheader>}
           <FlatList
             data={stations}
             keyExtractor={(item, index) => index + "_" + item.id}
